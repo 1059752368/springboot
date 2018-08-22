@@ -1,0 +1,37 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>货物管理</title>
+</head>
+<body>
+	<div class="showing">
+		<div th:replace="include::includeHead"></div>
+	</div>
+ <table border="1">
+        <thead>
+            <tr>
+                <th>水果名</th>
+                <th>产地</th>
+                <th>价格</th>
+                <th>创建日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c: ${pagecom.list}">
+                <td th:text="${c.name}"></td>
+                <td th:text="${c.locality}"></td>
+                <td th:text="${c.price}"></td>
+                <td th:text="${c.createTime}"></td>
+                <td><a>编辑</a>|<a>删除</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="margin-top:10px">
+    	<a th:href="@{/listCommodities(start=0)}">[首  页]</a>
+        <a th:href="@{/listCommodities(start=${pagecom.pageNum-1})}">[上一页]</a>
+        <a th:href="@{/listCommodities(start=${pagecom.pageNum+1})}">[下一页]</a>
+        <a th:href="@{/listCommodities(start=${pagecom.pages})}">[末  页]</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>零售商管理</title>
+<script src="jquery.min.js"></script>
+<script src="js/js.js"></script>
+<script type="text/javascript">
+	function changeStatus(){
+		var status = document.getElementById("indexStatus").value;
+		document.getElementById("status").value=status;
+	}
+	function editRetailer(id){
+             var message="{'id':'"+id+"'}";
+       		 $.ajax({  
+                type:'post',  
+                url:'${pageContext.request.contextPath}/retailer/editRetailer.action',  
+                contentType:'application/json;charset=utf-8',     
+                data:message,//数据格式是json串  
+                success:function(data){//返回json结果 
+                    $("#editName").val(data["name"]);
+                    $("#editTelphone").val(data["telphone"]);
+                    $("#editAddress").val(data["address"]);
+                    $("#retailerId").val(data["retailerId"]);
+                    $("#editStatus").val(data["status"]);
+                    $("#eStatus").val(data["status"]);
+                    //显示弹出框
+                    $(".mask").css("display","block");
+                    //引入分页信息至该form表单
+                    $("#eStartPage").val($("#startPage").val());
+                    $("#eCurrentPage").val($("#currentPage").val());
+                    $("#ePageSize").val($("#pageSize").val());
+                }   
+            });  
+       }
+
+</script>
+</head>
+<body>
+	
+	<div class="showing">
+		<div th:replace="include::includeHead"></div>
+	</div>
+	<form action="list" method="post">
+	<br/>
+		姓名：<input type="text" name="name" style="width: 120px;"/>
+		手机：<input type="text" name="telephone" style="width: 120px;"/>
+		地址：<input type="text" name="address" style="width: 120px;"/>
+		状态：<select id="indexStatus" onchange="changeStatus()">
+			<option value="-1" selected="selected">全部</option>
+		<option value="1">启用</option>
+			<option value="0">停用</option>
+		</select>
+		<input type="hidden" name="status" id="status" value="-1"/>
+		创建日期：<input type="text" name="createTime"/>
+		<input type="submit" value="搜索" style="background-color: #173e65;color: #ffffff; width: 70px;"/><br />
+	</form>
+	
+	<table border="1">
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>手机</th>
+                <th>地址</th>
+                <th>状态</th>
+                <th>创建日期</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="r: ${page.list}">
+                <td th:text="${r.name}"></td>
+                <td th:text="${r.telephone}"></td>
+                <td th:text="${r.address}"></td>
+                <td th:text="${r.status}"></td>
+                <td th:text="${r.createTime}"></td>
+                
+                <td><a th:href="@{/editRetailer(id=${r.retailerId})}">编辑</a>|<a th:href="@{/deleteRetailer(id=${r.retailerId})}">删除</a></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div style="margin-top:10px">
+    	<a th:href="@{/listCommodities(start=0)}">[首  页]</a>
+        <a th:href="@{/listCommodities(start=${page.pageNum-1})}">[上一页]</a>
+        <a th:href="@{/listCommodities(start=${page.pageNum+1})}">[下一页]</a>
+        <a th:href="@{/listCommodities(start=${page.pages})}">[末  页]</a>
+    </div>
+</body>
+</html>
